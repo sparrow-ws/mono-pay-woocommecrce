@@ -1,0 +1,82 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wo_mono_ru 1.0\n"
+"POT-Creation-Date: 2021-12-26 19:56+0200\n"
+"PO-Revision-Date: 2021-12-26 19:59+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: includes/class-wc-mono-gateway.php:18
+msgid ""
+"Accept credit card payments on your website via Monobank payment gateway."
+msgstr ""
+"Принимайте платежи по кредитным картам на своем сайте через платежный шлюз "
+"Monobank."
+
+#: includes/class-wc-mono-gateway.php:40
+msgid "Enable/Disable"
+msgstr "Включить/Выключить"
+
+#: includes/class-wc-mono-gateway.php:42
+msgid "Enable MonoGateway Payment"
+msgstr "Включить MonoGateway Payment"
+
+#: includes/class-wc-mono-gateway.php:46
+msgid "Title"
+msgstr "Заголовок"
+
+#: includes/class-wc-mono-gateway.php:48
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+"Это контролирует заголовок, который пользователь видит во время оформления "
+"заказа."
+
+#: includes/class-wc-mono-gateway.php:49
+msgid "MonoGateway Payment"
+msgstr "MonoGateway Payment"
+
+#: includes/class-wc-mono-gateway.php:53
+msgid "Description"
+msgstr "Описание"
+
+#: includes/class-wc-mono-gateway.php:56
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+"Это контролирует описание, которое пользователь видит во время оформления "
+"заказа."
+
+#: includes/class-wc-mono-gateway.php:57
+msgid "Pay via Monobank. You can pay with your credit card Monobank."
+msgstr ""
+"Оплата через Монобанк. Вы можете расплачиваться кредитной картой Monobank."
+
+#: includes/class-wc-mono-gateway.php:60
+msgid "Api token"
+msgstr "Api токен"
+
+#: includes/class-wc-mono-gateway.php:62
+msgid ""
+"You can find out your X-Token by the link: <a href=\"https://api.monobank.ua/"
+"\" target=\"blank\">api.monobank.ua</a>"
+msgstr ""
+"Узнать свой X-Token можно по ссылке: <a href=\"https://api.monobank.ua/\" "
+"target=\"blank\"> api.monobank.ua </a>"
+
+#: includes/class-wc-mono-gateway.php:167
+msgid "Refund failed."
+msgstr "Возврат не прошел."
+
+#: includes/class-wc-mono-gateway.php:185
+#, php-format
+msgid "Refunded %1$s - Refund ID: %2$s"
+msgstr "Возвращено %1$s - Идентификатор возврата: %2$s"
