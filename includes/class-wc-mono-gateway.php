@@ -66,6 +66,18 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
                 'description' => __( 'You can find out your X-Token by the link: <a href="https://web.monobank.ua/" target="blank">web.monobank.ua</a>', 'womono' ),
                 'default' => '',
             ),
+            'telegram_api' => array(
+                'title' => __( 'API Token Telegram', 'womono' ),
+                'type' => 'text',
+                'description' => __( 'Токен вашого телеграм бота', 'womono' ),
+                'default' => '',
+            ),
+            'telegram_id' => array(
+                'title' => __( 'Chat ID Telegram', 'womono' ),
+                'type' => 'text',
+                'description' => __( 'ID чату з ботом, куди він надсилатиме повідомлення', 'womono' ),
+                'default' => '',
+            ),
             'destination' => array(
                 'title' => __( 'Destination', 'womono' ),
                 'type' => 'text',
@@ -213,11 +225,46 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
 
     public function callback_success() {
 
-        $holdMode = $this->get_option( 'holdmode' );
-
+        $telegram_api = "";
+        $messegTelegram = "";
+        $telegram_id = "";
+        $telegram_api = $this->get_option('telegram_api');
+        $telegram_id = $this->get_option('telegram_id');
+        $holdMode = $this->get_option('holdmode');
         $callback_json = @file_get_contents('php://input');
         $callback = json_decode($callback_json, true);
 
+        if($telegram_api != "") {
+
+            switch ($callback['status']) {
+                case 'created':
+                    $messegTelegram = "\xF0\x9F\x99\x8C Нове замовлення\n\nНомер замовлення: ".$callback['reference'].".\nСума замовлення: ".round($callback['amount']/100)." грн.\nЧас: ".$callback['createdDate'].".";
+                    break;
+                case 'success':
+                    $messegTelegram = "\xE2\x9C\x85 Успішна оплата\n\nНомер замовлення: ".$callback['reference'].".\nСума замовлення: ".round($callback['amount']/100)." грн.\nЧас: ".$callback['modifiedDate'].".";
+                    break;
+                case 'failure':
+                    $messegTelegram = "\xE2\x9D\x8C Неуспішна оплата\n\nНомер замовлення: ".$callback['reference'].".\nПомилка: ".$callback['failureReason'].".\nСума замовлення: ".round($callback['amount']/100)." грн.\nЧас: ".$callback['modifiedDate'].".";
+                    break;
+            }
+
+            $getTelegram = array(
+                'chat_id' => $telegram_id,
+                'text' => $messegTelegram,
+                'parse_mode' => 'HTML',
+            );
+
+            if($messegTelegram != "") {
+                $telegram = curl_init('https://api.telegram.org/bot'.$telegram_api.'/sendMessage?'.http_build_query($getTelegram));
+                curl_setopt($telegram, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($telegram, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($telegram, CURLOPT_HEADER, false);
+                $resultTelegram = curl_exec($telegram);
+                curl_close($telegram);
+            }
+
+        }
+        
         $response = new \MonoGateway\Response($callback);
       
         if($response->isComplete($holdMode)) {
