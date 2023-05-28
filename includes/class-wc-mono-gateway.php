@@ -5,7 +5,6 @@ use MonoGateway\Payment;
 class WC_Gateway_Mono extends WC_Payment_Gateway
 {
     private $token;
-    //private $api_url;
 
     public function __construct()
     {
@@ -13,7 +12,6 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
         $this->id = 'mono_gateway';
         $this->icon = '';
 
-     
         $this->has_fields = false;
         $this->method_title = _x('Monobank Payment', 'womono');
         $this->method_description = __('Accept credit card payments on your website via Monobank payment gateway.', 'womono');
@@ -32,11 +30,8 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
         add_action('woocommerce_api_mono_gateway', array($this, 'callback_success'));
         add_action('woocommerce_order_status_processing', array($this, 'mono_pay_status'));
-       
-      
-    }
 
-   
+    }
 
     public function init_form_fields() {
         $this->form_fields = array(
@@ -69,21 +64,23 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
             'telegram_api' => array(
                 'title' => __( 'API Token Telegram', 'womono' ),
                 'type' => 'text',
-                'description' => __( 'Токен вашого телеграм бота', 'womono' ),
+                'description' => __( 'Telegram bot token', 'womono' ),
                 'default' => '',
             ),
             'telegram_id' => array(
                 'title' => __( 'Chat ID Telegram', 'womono' ),
                 'type' => 'text',
-                'description' => __( 'ID чату з ботом, куди він надсилатиме повідомлення', 'womono' ),
+                'description' => __( 'The ID of the chat with the bot to which it will send messages', 'womono' ),
                 'default' => '',
             ),
+            /*
             'destination' => array(
                 'title' => __( 'Destination', 'womono' ),
                 'type' => 'text',
                 'description' => __( 'Призначення платежу', 'womono' ),
                 'default' => '',
             ),
+            */
             'holdmode' => array(
                 'title' => __( 'Enable/Disable Hold', 'womono' ),
                 'type' => 'checkbox',
@@ -99,7 +96,6 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
         );
     }
 
-   
     public function get_icon() {
 
         $plugin_dir = plugin_dir_url(__FILE__);
@@ -188,13 +184,13 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
         $monoOrder->setBasketOrder($basket_info);
 
         if(!empty($redirect_url)){
-            $monoOrder->setRedirectUrl('https://' . $_SERVER['HTTP_HOST'] . $redirect_url);
+            $monoOrder->setRedirectUrl('https://'.$_SERVER['HTTP_HOST'].$redirect_url);
         }
          else{
-            $monoOrder->setRedirectUrl('https://' . $_SERVER['HTTP_HOST']);
+            $monoOrder->setRedirectUrl($order->get_checkout_order_received_url());
         }
 
-        $monoOrder->setWebHookUrl('https://' . $_SERVER['HTTP_HOST'] . '/?wc-api=mono_gateway');
+        $monoOrder->setWebHookUrl('https://'.$_SERVER['HTTP_HOST'].'/?wc-api=mono_gateway');
 
         $payment = new Payment($token);
         $payment->setOrder($monoOrder);
@@ -225,16 +221,14 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
 
     public function callback_success() {
 
-        $telegram_api = "";
         $messegTelegram = "";
-        $telegram_id = "";
         $telegram_api = $this->get_option('telegram_api');
         $telegram_id = $this->get_option('telegram_id');
         $holdMode = $this->get_option('holdmode');
         $callback_json = @file_get_contents('php://input');
         $callback = json_decode($callback_json, true);
 
-        if($telegram_api != "") {
+        if(!empty($telegram_api)) {
 
             switch ($callback['status']) {
                 case 'created':
@@ -349,10 +343,6 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
         return true;
     }
 
-    /*protected function getApiUrl() {
-        return $this->api_url;
-    }*/
-
     protected function getToken() {
         return $this->token;
     }
@@ -361,9 +351,11 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
         return $this->redirect;
     }
 
+    /*
     protected function getDestination() {
         return $this->destination;
     }
+    */
 
     public function mono_pay_status($order_id) {
         $holdMode = $this->get_option( 'holdmode' );
@@ -388,7 +380,6 @@ class WC_Gateway_Mono extends WC_Payment_Gateway
     }
 
 
-    
-
-   
 }
+
+
